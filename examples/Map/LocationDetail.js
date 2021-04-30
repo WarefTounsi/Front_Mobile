@@ -17,13 +17,14 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import { IconButton, Colors } from 'react-native-paper';
 import { Icon } from "react-native-elements";
 import ProgressBar from "react-native-progress/Bar";
-import MainHeader from "../components/MainHeader";
+import MainHeader from "./components/MainHeader";
 
 import Config from "react-native-config";
 
-
 // import { BackgroundColor } from "../constants";
-import { API_URL } from "../../../env";
+const BackgroundColor="#559EDF";
+
+import { API_URL } from "../../env";
 
 export default function LocationDetail({ navigation, route }) {
   const [staProgress, setStaProgress] = useState(0);
@@ -31,6 +32,7 @@ export default function LocationDetail({ navigation, route }) {
   const [defProgress, setDefProgress] = useState(0);
   const [cpProgress, setCpProgress] = useState(0);
   const [media, setMedia] = useState([]);
+
 
   const maxSTA = 400;
   const maxATK = 400;
@@ -40,13 +42,11 @@ export default function LocationDetail({ navigation, route }) {
   const { pokemon = {} } = route.params;
   const { location = {} } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
- const BackgroundColor="#559EDF";
-
 
   function getPictures(){
 
 
-    fetch(API_URL+"locations/"+(location.id-1)+"/media", {
+    fetch(API_URL+"locations/"+location.id+"/media", {
       "method": "GET",
       // "headers": {
       //   "x-rapidapi-host": "quotes15.p.rapidapi.com",
@@ -57,6 +57,8 @@ export default function LocationDetail({ navigation, route }) {
       .then(response => {
         // newArr.push(response.Locations);
         setMedia(response.Media);
+        // console.lcog(response.Media)
+
       })
       .catch(err => {
         setMedia(err);
@@ -88,6 +90,65 @@ export default function LocationDetail({ navigation, route }) {
         </TouchableOpacity>
     </View>
     );
+  }
+  function fetchData(item){
+    try{
+      if (item=="themes"){
+        fetch(API_URL+"locations/"+location.id+"/themes", {
+          "method": "GET",
+          // "headers": {
+          //   "x-rapidapi-host": "quotes15.p.rapidapi.com",
+          //   "x-rapidapi-key": "yourapikey"
+          // }
+        })
+          .then(response => response.json())
+          .then(response => {
+            // newArr.push(response.Locations);
+            let data = response.Themes;
+            // console.log(response)
+            for (let theme of data){
+              console.log("teeeest")
+              theme["url"]=theme["photo"];
+            }
+            setMedia(data);
+            // console.log(response)
+    
+          })
+          .catch(err => {
+            setMedia(err);
+    
+          });
+      }
+      else if (item == "intro"){
+        getPictures();
+      }
+      else if (item == "stations"){
+        fetch(API_URL+"stations/"+location.id+"/media", {
+          "method": "GET",
+        })
+          .then(response => response.json())
+          .then(response => {
+            // newArr.push(response.Locations);
+            console.log("jaw")
+            console.log(response)
+            let data = response.Media;
+            // console.log(response)
+            // for (let theme of data){
+            //   theme["url"]=theme["photo"];
+            // }
+            setMedia(data);
+            // console.log(response)
+    
+          })
+          .catch(err => {
+            // console.log(err)
+            setMedia(err);
+    
+          });
+      }
+    }catch(err){
+
+    }
   }
 
   useEffect(() => {
@@ -139,7 +200,7 @@ export default function LocationDetail({ navigation, route }) {
             placeholderStyle={{ backgroundColor: "transparent" }}
             PlaceholderContent={<ActivityIndicator />}
             source={{ uri: location.photo }}
-            
+          
           />
 
           <Text style={styles.locationName}>{location.title}  </Text>
@@ -153,25 +214,24 @@ export default function LocationDetail({ navigation, route }) {
           </View>
 
           <View>
-          <Button
-  onPress={() => console.log(media)}
+          <View style={styles.buttons}>
+          <Button  onPress={() => fetchData("intro")}
   title="Intro"
   color={BackgroundColor}
   accessibilityLabel="Learn more about this purple button"
-/><Button
-  onPress={() => console.log(API_URL)}
+/><Button  onPress={() => fetchData("themes")}
   title="Themes"
 
   color={BackgroundColor}
   accessibilityLabel="Learn more about this purple button"
 />
-<Button
-  onPress={() => console.log(media)}
+<Button  onPress={() => fetchData("stations")}
   title="Stations"
 
   color={BackgroundColor}
   accessibilityLabel="Learn more about this purple button"
 />
+</View>
           <FlatList
         data={media}
         style={{flex:1}}
@@ -188,22 +248,19 @@ export default function LocationDetail({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: {BackgroundColor},
+    backgroundColor: "#559EDF",
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttons: {
-    alignItems: 'center',
+    flexDirection:"row",
     alignSelf: "center",
-    resizeMode: "contain",
-    width:5000
-    // flex: 1,    
-    // flexDirection:"row",
+
   },
   button: {
-    flex: 1,
-    // flexDirection:"row"
+    padding: 10,
+    marginLeft: 150,
   },
   content: {
     flex: 1,

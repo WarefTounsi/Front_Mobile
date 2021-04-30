@@ -50,7 +50,7 @@ export default function LocationList({ navigation }) {
         onPress={() => {
           navigation.navigate("LocationDetail", {
             pokemon: displayPokemons[index],
-            location: displaylocations[index]
+            location: displaylocations[item.id-1]
           });
         }}
       >
