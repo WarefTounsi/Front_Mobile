@@ -19,7 +19,7 @@ export default function App() {
       // Go back to Example List
       if (exampleIndex !== null) {
         setExampleIndex(null);
-      } 
+      }
       // Exit app if user currently in Example List
       else {
         BackHandler.exitApp();
