@@ -38,14 +38,12 @@ export default function Location() {
       <>
         <StatusBar style="light" />
   
-        <NavigationContainer>
           <Tab.Navigator
             screenOptions={stackScreenOptions}
             tabBarOptions={tabBarOptions}
           >
             <Tab.Screen name="Locations" component={AppStackScreen} />
           </Tab.Navigator>
-        </NavigationContainer>
       </>
     );
   }

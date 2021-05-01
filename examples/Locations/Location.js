@@ -58,14 +58,13 @@ export default function Location() {
     <>
       <StatusBar style="light" />
 
-      <NavigationContainer>
+
         <Tab.Navigator
           screenOptions={tabScreenOptions}
           tabBarOptions={tabBarOptions}
         >
           <Tab.Screen name="Locations" component={PokemonStackScreen} />
         </Tab.Navigator>
-      </NavigationContainer>
     </>
   );
 }
