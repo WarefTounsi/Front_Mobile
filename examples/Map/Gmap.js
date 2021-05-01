@@ -4,6 +4,8 @@ import { View, Text,StyleSheet,Image  } from "react-native";
 
 import { GOOGLE_API } from "../../env";
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import Polygon from 'react-native-maps';
+
 import GetLocation from 'react-native-get-location';
 // import Geolocation from '@react-native-community/geolocation';
 import * as Permissions from 'expo-permissions';
@@ -19,11 +21,14 @@ import {API_URL} from "../../env";
 
 export default function Gmap({ navigation }) {
   // const locations = getLocations();
-
+  const origin = { latitude: 36.8497386, longitude: 10.1412698 };
+  const destination = { latitude: 36.8500659, longitude: 10.243658 };
 //   const [markers, setMarkers] = React.useState('');
 const [locations, setLocations] = React.useState([]);
 const [currentLocation, setCurrentLocation] = React.useState([]);
 const [markers, setMarkers] = React.useState([]);
+const [polygon, setPolygon] = React.useState([]);
+
 const path =  [
     {lat: 36.9352001, lng: 10.7766924 },
     {lat: 36.9358131, lng: 10.7770143 },
@@ -41,7 +46,14 @@ function getLocations(){
       .then(response => response.json())
       .then(response => {
         // newArr.push(response.Locations);
-        setLocations(response.Locations);
+        // setLocations(response.Locations);
+        console.log(JSON.parse(response.Locations[0].polygon).array);
+        setPolygon(JSON.parse(response.Locations[0].polygon).array);
+        console.log(polygon[0]);
+
+        // console.log(locations[0].polygon.array)
+        console.log("locaaaatiooons)")
+
 
         let Array=[];
         for (let location of response.Locations) {
@@ -82,8 +94,8 @@ async function getLocationAsync () {
     // Geolocation.getCurrentPosition(info => console.log(info));
     // console.log(GetLocation.getCurrentPosition());
 
-    let location = Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Highest});
-    console.log(location)
+    // let location = Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Highest});
+    // console.log(location)
     // axios.get(`http://6a5dbf9f25ce.ngrok.io/api/locations`)
     // .then(res => {
     //       setQuote(res);
@@ -140,7 +152,7 @@ async function getLocationAsync () {
       coordinate={marker.latlng}
       title={marker.title}
       description={marker.description}
-      onPress={() => console.log(locations[index])}
+      // onPress={() => console.log(polygon)}
       onCalloutPress={() => navigation.navigate("LocationDetail", {
         location: locations[marker.id-1]
 
@@ -159,15 +171,42 @@ async function getLocationAsync () {
     </Marker>
     ))}
  
- <MapViewDirections
-    origin={{
-        latitude: currentLocation.latitude,
-         longitude: currentLocation.longitude}}
-    destination={markers[0]}
-    apikey="AIzaSyB2Yno10-YTnLjjn_Vtk0V8cdcY5lC4plU"
-  />
+
+ <Marker
+      // key={true}
+      coordinate={origin}
+      minDelta={0.5}
+      maxDelta={2}
+      // description={marker.description}
+      >   
+
+
+       <Image  source={require('../../assets/giphy.gif')} 
+           style={{width: 100, height: 100,  flex:1}} 
+           />
+      </Marker>
+      
+ {/* {markers.map((marker, index) => (
+
+  <MapView.Polygon
+                    coordinates={polygon}
+                    fillColor="rgba(0, 0, 200, 0.2)"
+
+                    strokeColor="rgba(0,0,0,0.5)"
+                    strokeWidth={2}
+                />
+                ))} */}
+
+  {/* <Polygon 
+          coordinates={polygon}
+          // destination={destination}
+          
+          apiKey={GOOGLE_API}
+          strokeWidth={4}
+          strokeColor="#12bc00"
+        /> */}
 </MapView>
-        
+
        
     </View>
   );
