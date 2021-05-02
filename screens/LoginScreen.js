@@ -9,6 +9,36 @@ import {
 import { Text, ListItem } from "react-native-elements";
 import Constants from "expo-constants";
 import { EXAMPLE_LIST } from "../example-list";
+import { createDrawerNavigator } from "react-navigation-drawer";
+import { createStackNavigator } from "react-navigation-stack";
+
+import Location from "../examples/Locations/Location";
+import Map from "../examples/Map/Map";
+import SPath from "../examples/SPath/SPath";
+
+const Drawer = createDrawerNavigator(
+  {
+    Location: { screen: Location },
+    Map: { screen: Map },
+    SexyPath: { screen: SPath },
+  },
+  {
+    initialRouteName: "Location",
+    unmountInactiveRoutes: true,
+    headerMode: "none",
+    contentComponent: (props) => <Sidebar {...props} />,
+  }
+);
+
+const AppNavigator = createStackNavigator(
+  {
+    Drawer: { screen: Drawer },
+  },
+  {
+    initialRouteName: "Drawer",
+  }
+);
+const AppContainer = createAppContainer(AppNavigator);
 
 export default function LoginScreen() {
   const [exampleIndex, setExampleIndex] = useState(null);
@@ -19,7 +49,7 @@ export default function LoginScreen() {
       // Go back to Example List
       if (exampleIndex !== null) {
         setExampleIndex(null);
-      } 
+      }
       // Exit app if user currently in Example List
       else {
         BackHandler.exitApp();
@@ -41,8 +71,10 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <AppContainer />
+
       <Text h4 style={styles.heading}>
-      Tunisicon functionalities
+        Tunisicon functionalities
       </Text>
 
       <ScrollView>
