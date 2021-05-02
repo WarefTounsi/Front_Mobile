@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import gmap from "./Gmap";
 import LocationDetail from "./LocationDetail";
+import SettingsList from "../../components/SettingsList";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -29,6 +30,7 @@ function AppStackScreen() {
     <AppStack.Navigator screenOptions={stackScreenOptions}>
       <AppStack.Screen name="Map" component={gmap} />
       <AppStack.Screen name="LocationDetail" component={LocationDetail} />
+      <AppStack.Screen name="Settings" component={SettingsList} />
     </AppStack.Navigator>
   );
 }

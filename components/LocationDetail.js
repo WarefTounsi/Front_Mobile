@@ -18,16 +18,17 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { IconButton, Colors } from "react-native-paper";
 import { Icon } from "react-native-elements";
 import ProgressBar from "react-native-progress/Bar";
-import MainHeader from "./components/MainHeader";
+import MainHeader from "./MainHeader";
+
+import { AsyncStorage } from 'react-native';
 
 import Config from "react-native-config";
 
 // import { BackgroundColor } from "../constants";
 const BackgroundColor = "#559EDF";
-
-import { API_URL } from "../../env";
-import { AsyncStorage } from 'react-native';
 const value =  AsyncStorage.getItem('language');
+
+import { API_URL } from "../env";
 
 export default function LocationDetail({ navigation, route }) {
   const [staProgress, setStaProgress] = useState(0);
@@ -44,7 +45,17 @@ export default function LocationDetail({ navigation, route }) {
   const { pokemon = {} } = route.params;
   const { location = {} } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
-
+ async function retrieveData()  {
+    try {
+      const value = await AsyncStorage.getItem('language');
+      if (value !== null) {
+        // We have data!!
+        console.log(value);
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
   function getPictures() {
     fetch(API_URL + "locations/" + location.id + "/media", {
       method: "GET",
@@ -141,6 +152,10 @@ export default function LocationDetail({ navigation, route }) {
   }
 
   useEffect(() => {
+    // console.log( AsyncStorage.getItem('language'))
+    // console.log("vaeza");
+    // console.log(value);
+    retrieveData();
     getPictures();
     const timeOut = setTimeout(() => {
       setStaProgress(+pokemon.sta / maxSTA);

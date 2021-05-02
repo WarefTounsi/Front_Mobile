@@ -21,13 +21,14 @@ import {API_URL} from "../../env";
 
 export default function Gmap({ navigation }) {
   // const locations = getLocations();
-  const origin = { latitude: 36.8497386, longitude: 10.1412698 };
+  const origin = { latitude: 36.8496998, longitude: 10.141113 };
   const destination = { latitude: 36.8500659, longitude: 10.243658 };
 //   const [markers, setMarkers] = React.useState('');
 const [locations, setLocations] = React.useState([]);
 const [currentLocation, setCurrentLocation] = React.useState([]);
 const [markers, setMarkers] = React.useState([]);
 const [polygon, setPolygon] = React.useState([]);
+const [giphy, setGiphy] = React.useState([]);
 
 const path =  [
     {lat: 36.9352001, lng: 10.7766924 },
@@ -47,12 +48,12 @@ function getLocations(){
       .then(response => {
         // newArr.push(response.Locations);
         // setLocations(response.Locations);
-        console.log(JSON.parse(response.Locations[0].polygon).array);
+        // console.log(JSON.parse(response.Locations[0].polygon).array);
         setPolygon(JSON.parse(response.Locations[0].polygon).array);
-        console.log(polygon[0]);
+        // console.log(polygon[0]);
 
         // console.log(locations[0].polygon.array)
-        console.log("locaaaatiooons)")
+        // console.log("locaaaatiooons)")
 
 
         let Array=[];
@@ -83,7 +84,10 @@ async function getLocationAsync () {
     let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Highest});
     const { latitude , longitude } = location.coords
     setCurrentLocation(location.coords)
+    setGiphy([location.coords])
+    console.log("giphy")
     console.log(location)
+    console.log(giphy)
     // this.getGeocodeAsync({latitude, longitude})
     // this.setState({ location: {latitude, longitude}});
 
@@ -91,6 +95,9 @@ async function getLocationAsync () {
   useEffect(() => {
     getLocations();
     getLocationAsync();
+    setGiphy([{latitude:currentLocation.latitude,longitude:currentLocation.longitude}]);
+    // console.log("giphyyy")
+    // console.log(giphy)
     // Geolocation.getCurrentPosition(info => console.log(info));
     // console.log(GetLocation.getCurrentPosition());
 
@@ -139,7 +146,7 @@ async function getLocationAsync () {
       <MapView
   style={styles.map}
   provider={PROVIDER_GOOGLE}
-               showsUserLocation
+              //  showsUserLocation
                initialRegion={{
                latitude: currentLocation.latitude,
                 longitude: currentLocation.longitude,
@@ -171,12 +178,17 @@ async function getLocationAsync () {
     </Marker>
     ))}
  
+ {giphy.map((marker, index) => (
 
  <Marker
       // key={true}
+      key={index}
       coordinate={origin}
-      minDelta={0.5}
-      maxDelta={2}
+      title="Aziz Koubaa"
+      onCalloutPress={() => navigation.navigate("Settings")}
+
+      // minDelta={0.5}
+      // maxDelta={2}
       // description={marker.description}
       >   
 
@@ -185,8 +197,9 @@ async function getLocationAsync () {
            style={{width: 100, height: 100,  flex:1}} 
            />
       </Marker>
-      
- {/* {markers.map((marker, index) => (
+          ))}
+
+ {markers.map((marker, index) => (
 
   <MapView.Polygon
                     coordinates={polygon}
@@ -195,7 +208,7 @@ async function getLocationAsync () {
                     strokeColor="rgba(0,0,0,0.5)"
                     strokeWidth={2}
                 />
-                ))} */}
+                ))}
 
   {/* <Polygon 
           coordinates={polygon}

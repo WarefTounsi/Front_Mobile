@@ -44,9 +44,9 @@ const OnBoardingScreen = ({ navigation }) => {
       //   height: 100,
       //   resizeMode: "contain",
       // }}
-      SkipButtonComponent={Skip}
-      NextButtonComponent={Next}
-      DoneButtonComponent={Done}
+      // SkipButtonComponent={Skip}
+      // NextButtonComponent={Next}
+      // DoneButtonComponent={Done}
       DotComponent={Dots}
       onSkip={() => navigation.replace("Login")}
       onDone={() => navigation.navigate("Login")}

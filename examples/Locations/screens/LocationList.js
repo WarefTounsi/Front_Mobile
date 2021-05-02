@@ -4,13 +4,18 @@ import {
   View,
   FlatList,
   ActivityIndicator,
+  TouchableOpacity,
+  Image,
+  Text,
   Alert,
 } from "react-native";
+import { IconButton, Colors } from "react-native-paper";
 import { Avatar, ListItem, SearchBar } from "react-native-elements";
 
-import MainHeader from "../components/MainHeader";
+import MainHeader from "../../../components/MainHeader";
 import { FullPokemonsAPI } from "../constants";
 import {API_URL} from "../../../env"
+import { AsyncStorage } from 'react-native';
 
 export default function LocationList({ navigation }) {
   const [displayPokemons, setDisplayPokemons] = useState([]);
@@ -19,15 +24,27 @@ export default function LocationList({ navigation }) {
   const [keyword, setKeyword] = useState("");
   const [locations, setLocations] = React.useState('');
   const [displaylocations, setDisplaylocations] = useState([]);
+  const [language, setLanguage] = React.useState('');
 
+  async function retrieveData()  {
+    try {
+      const value = await AsyncStorage.getItem('language');
+      if (value !== null) {
+        // We have data!!
+        setLanguage(value);
+        console.log(value);
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
   function getLocations(){
 
     fetch(API_URL+"locations", {
       "method": "GET",
-      // "headers": {
-      //   "x-rapidapi-host": "quotes15.p.rapidapi.com",
-      //   "x-rapidapi-key": "yourapikey"
-      // }
+      "headers": {
+        "content-Language": {language},
+      }
     })
       .then(response => response.json())
       .then(response => {
@@ -54,19 +71,73 @@ export default function LocationList({ navigation }) {
           });
         }}
       >
-        <Avatar
+        <View>
+         <TouchableOpacity
+            onPress={() => console.log({ process })}
+            style={styles.closeButton}
+          >
+            <View flexDirection="row">
+              <IconButton
+                icon="plus"
+                color={Colors.blue200}
+                style={{ marginRight: 180 }}
+                size={30}
+                // style={{alignItems:"left"}}
+                onPress={() => console.log("added")}
+              />
+
+              <IconButton
+                icon="check"
+                color={Colors.blue200}
+                size={30}
+                alignItems="right"
+                // style={{alignItems:"left"}}
+                onPress={() => console.log("liked")}
+              />
+            </View>
+          </TouchableOpacity>
+          <Image
+            style={{ width: 100, height: 100, borderRadius: 200 / 2, flex: 1 }}
+            placeholderStyle={{ backgroundColor: "transparent" }}
+            PlaceholderContent={<ActivityIndicator />}
+            source={{ uri: item.photo }}
+          />
+          <View flexDirection="row">
+            <IconButton
+              icon="heart"
+              color={Colors.red500}
+              style={{ marginRight: 180 }}
+              size={30}
+              // style={{alignItems:"left"}}
+              onPress={() => console.log("liked")}
+            />
+
+            <Text
+              style={{
+                backgroundColor: "lightgrey",
+                borderRadius: 30,
+                height: 40,
+              }}
+            >
+              20 Km
+            </Text>
+          </View>
+
+          <Text style={styles.locationName}>{item.title} </Text>
+          </View>
+        {/* <Avatar
           source={item.photo ? { uri: item.photo } : null}
           size="medium"
-        />
+        /> */}
 
-        <ListItem.Content>
+        {/* <ListItem.Content>
           <ListItem.Title>{item.title} </ListItem.Title>
 
           <ListItem.Subtitle style={styles.listItemSubtitle}>
 
             {item.id}
           </ListItem.Subtitle>
-        </ListItem.Content>
+        </ListItem.Content> */}
 
         {/* <View style={{ flexDirection: "row" }}>{PokemonTypeElement}</View> */}
       </ListItem>
@@ -141,4 +212,14 @@ export default function LocationList({ navigation }) {
 
 const styles = StyleSheet.create({
   listItemSubtitle: { marginTop: 10, color: "#939393" },
+  buttons: {
+    flexDirection: "row",
+    alignSelf: "center",
+  },
+  locationName: {
+    marginTop: 80,
+    alignSelf: "center",
+    fontSize: 30,
+    color: "#4f4f4f",
+  },
 });

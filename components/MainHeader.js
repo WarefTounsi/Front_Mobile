@@ -1,7 +1,8 @@
 import React from "react";
 import { Header, Icon } from "react-native-elements";
-import { BackgroundColor } from "../constants";
+// import { BackgroundColor } from "../constants";
 
+const BackgroundColor = "#559EDF";
 export default function MainHeader({ navigation, isMain, title }) {
   if (isMain) {
     return (
@@ -11,6 +12,7 @@ export default function MainHeader({ navigation, isMain, title }) {
         }}
         centerComponent={{ text: title, style: { color: "#fff" } }}
       />
+
     );
   } else {
     return (
