@@ -7,6 +7,7 @@ import {
   CheckBox,
   Button,
   Alert,
+  Text,
 } from "react-native";
 import { Avatar, ListItem, SearchBar } from "react-native-elements";
 import * as Location from 'expo-location';
@@ -247,15 +248,21 @@ var places = []
         <FlatList
           data={displaylocations}
           renderItem={renderLocations}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           initialNumToRender={10}
         />
         
       ) : (
         <ActivityIndicator animating size="large" style={{ marginTop: 20 }} />
       )}
-            <Button title="Calculate" style={styles.buttons}         onPress={() => { calculate();
+      <Text>ere</Text>
+            <Button title="Calcrrulate" style={styles.buttons}         onPress={() => { calculate();
             } }> </Button>
+            
+            <Button
+                    onPress={() => console.log("blabla")}
+                    title={t('common:actions.toggleToGerman')}
+                />
 
     </View>
   );

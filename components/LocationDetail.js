@@ -19,7 +19,7 @@ import { IconButton, Colors } from "react-native-paper";
 import { Icon } from "react-native-elements";
 import ProgressBar from "react-native-progress/Bar";
 import MainHeader from "./MainHeader";
-
+import Categories from "./Categories"
 import { AsyncStorage } from 'react-native';
 
 import Config from "react-native-config";
@@ -157,16 +157,11 @@ export default function LocationDetail({ navigation, route }) {
     // console.log(value);
     retrieveData();
     getPictures();
-    const timeOut = setTimeout(() => {
-      setStaProgress(+pokemon.sta / maxSTA);
-      setAtkProgress(+pokemon.atk / maxATK);
-      setDefProgress(+pokemon.def / maxDEF);
-      setCpProgress(+pokemon.cp / maxCP);
-    }, 800);
+    
 
     // https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
     return () => {
-      clearTimeout(timeOut);
+      // clearTimeout(timeOut);
     };
   }, []);
 
@@ -258,13 +253,16 @@ export default function LocationDetail({ navigation, route }) {
               accessibilityLabel="Learn more about this purple button"
             />
           </View>
+          <View>
           <FlatList
             data={media}
-            style={{ flex: 1 }}
+            // style={{ flex: 1 }}
             renderItem={renderPictures}
             numColumns={3}
           />
+          <Categories item="3" location={location}></Categories>
           {/* </View> */}
+          </View>
         </View>
       </ScrollView>
     </View>

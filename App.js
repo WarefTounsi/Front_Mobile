@@ -1,94 +1,124 @@
-import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  View,
-  BackHandler,
-} from "react-native";
-import { Text, ListItem } from "react-native-elements";
-import Constants from "expo-constants";
-import { EXAMPLE_LIST } from "./example-list";
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { DrawerContent } from './screens/DrawerContent';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { AuthContext } from './components/context';
+import i18n from 'i18n-js';
 
-//hahahahahaha hedhi el bronch Waref Sexy
-import Onboarding from "react-native-onboarding-swiper";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-// import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import { 
+  NavigationContainer, 
+  DefaultTheme as NavigationDefaultTheme,
+  DarkTheme as NavigationDarkTheme
+} from '@react-navigation/native';
+import { 
+  Provider as PaperProvider, 
+  DefaultTheme as PaperDefaultTheme,
+  DarkTheme as PaperDarkTheme 
+} from 'react-native-paper';
+import memoize from 'lodash.memoize'
 
-import OnBoardingScreen from "./screens/OnBoardingScreen";
-import LoginScreen from "./screens/LoginScreen";
-import { Value } from "react-native-reanimated";
-const AppStack = createStackNavigator();
+import About from './screens/About';
+import Home from './screens/Home';
+import LocationList from './screens/LocationList';
+import LocationDetail from './screens/LocationDetail';
+import Settings from './screens/Settings';
+import Gmap from './screens/Gmap';
+import OnBoardingScreen from './screens/OnBoardingScreen';
+import Regions from './screens/Regions';
+import MainHeader from "./components/MainHeader";
 
 export default function App() {
-  const [exampleIndex, setExampleIndex] = useState(null);
+  const Drawer = createDrawerNavigator();
 
-  // Handle when user press Hardware Back Button
-  useEffect(() => {
-    // AsyncStorage.getItem("alreadyLaunched").then((Value) => {
-    //   if (Value == null) {
-    //     AnsyncStorage.setItem("alreadyLaunched", "true");
-    //     setIsFirstLaunch(true);
-    //   } else {
-    //     setIsFirstLaunch(false);
-    //   }
-    // });
+  const [isDarkTheme, setIsDarkTheme] = React.useState(false);
+  const authContext = React.useMemo(() => ({
+    toggleTheme: () => {
+      setIsDarkTheme( isDarkTheme => !isDarkTheme );
+    }
+  }), []);
+  const CustomDefaultTheme = {
+    ...NavigationDefaultTheme,
+    ...PaperDefaultTheme,
+    colors: {
+      ...NavigationDefaultTheme.colors,
+      ...PaperDefaultTheme.colors,
+      background: '#ffffff',
+      text: '#333333'
+    }
+  }
+  
+  const translationGetters = {
+    en: () => require('./I18n/en.json'),
+    fr: () => require('./I18n/fr.json'),
+    // ar: () => require('./I18n/ar.json')
+  }
+  const translate = memoize(
+    (key, config) => i18n.t(key, config),
+    (key, config) => (config ? key + JSON.stringify(config) : key)
+  )
+  const setI18nConfig = () => {
+    const fallback = { languageTag: 'en' }
+    const origin = { languageTag: 'fr' }
+    const { languageTag } = origin ;
+    console.log(translate);
+    translate.cache.clear();
+    i18n.translations = { [languageTag]: translationGetters[languageTag]() }
+    i18n.locale = languageTag;
 
-    const backAction = () => {
-      // Go back to Example List
-      if (exampleIndex !== null) {
-        setExampleIndex(null);
-      }
-      // Exit app if user currently in Example List
-      else {
-        BackHandler.exitApp();
-      }
+  }
+  setI18nConfig()
 
-      return true;
-    };
+  const CustomDarkTheme = {
+    ...NavigationDarkTheme,
+    ...PaperDarkTheme,
+    colors: {
+      ...NavigationDarkTheme.colors,
+      ...PaperDarkTheme.colors,
+      background: '#333333',
+      text: '#ffffff'
+    }
+  };
+  const stackScreenOptions = {
+    headerShown: true,
+    gestureEnabled: true,
+  };
 
-    // https://reactnative.dev/docs/backhandler
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, [exampleIndex]);
-
-  if (exampleIndex !== null) return EXAMPLE_LIST[exampleIndex].component;
-
-  const [isFirstLaunch, setIsFirstLaunch] = React.useState(null);
-
-  // if (isFirstLaunch == null) {
-  //   return null;
-  // }
-  // if (isFirstLaunch == true) {
+  const theme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
   return (
-    <NavigationContainer>
-      <AppStack.Navigator headerMode="none">
-        <AppStack.Screen name="Onboarding" component={OnBoardingScreen} />
-        <AppStack.Screen name="Login" component={LoginScreen} />
-      </AppStack.Navigator>
+    <PaperProvider theme={theme}>
+          <AuthContext.Provider value={authContext}>
+          
+    <NavigationContainer theme={theme}>
+    {/* <MainHeader
+        // title=
+        // isMain={true}
+        navigation={Drawer}
+      /> */}
+        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} drawerPosition="left" />} >
+        <Drawer.Screen name="OnBoarding" component={OnBoardingScreen} />
+          <Drawer.Screen name="Home" component={Home} />
+          <Drawer.Screen name="About" component={About} />
+          <Drawer.Screen name="LocationList" component={LocationList} />
+          <Drawer.Screen name="LocationDetail" component={LocationDetail} />
+          <Drawer.Screen name="Map" component={Gmap} />
+          <Drawer.Screen name="Settings" component={Settings} />
+          <Drawer.Screen name="Regions" component={Regions} />
+
+        </Drawer.Navigator>
+      
+    
     </NavigationContainer>
+    </AuthContext.Provider>
+    </PaperProvider>
   );
-  // } else {
-  //   <LoginScreen />;
-  // }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
-  },
-  heading: {
-    textAlign: "center",
-    padding: 12,
-  },
-  title: {
-    fontWeight: "bold",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

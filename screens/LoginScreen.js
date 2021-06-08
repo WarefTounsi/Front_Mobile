@@ -20,7 +20,7 @@ const Drawer = createDrawerNavigator(
   {
     Location: { screen: Location },
     Map: { screen: Map },
-    SexyPath: { screen: SPath },
+    // SPath: { screen: SPath },
   },
   {
     initialRouteName: "Location",
@@ -38,7 +38,7 @@ const AppNavigator = createStackNavigator(
     initialRouteName: "Drawer",
   }
 );
-const AppContainer = createAppContainer(AppNavigator);
+// const AppContainer = createAppContainer(AppNavigator);
 
 export default function LoginScreen() {
   const [exampleIndex, setExampleIndex] = useState(null);
@@ -71,7 +71,7 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppContainer />
+      {/* <AppContainer /> */}
 
       <Text h4 style={styles.heading}>
         Tunisicon functionalities

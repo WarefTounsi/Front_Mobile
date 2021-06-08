@@ -8,8 +8,10 @@ import {
   StyleSheet,
 } from "react-native";
 
+
 import Onboarding from "react-native-onboarding-swiper";
-import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
+// import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
+
 
 const Dots = ({ selected }) => {
   let backgroundColor;
@@ -48,8 +50,8 @@ const OnBoardingScreen = ({ navigation }) => {
       // NextButtonComponent={Next}
       // DoneButtonComponent={Done}
       DotComponent={Dots}
-      onSkip={() => navigation.replace("Login")}
-      onDone={() => navigation.navigate("Login")}
+      onSkip={() => navigation.navigate("Home")}
+      onDone={() => navigation.navigate("Home")}
       pages={[
         {
           backgroundColor: "#fff",

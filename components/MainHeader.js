@@ -1,7 +1,7 @@
 import React from "react";
 import { Header, Icon } from "react-native-elements";
 // import { BackgroundColor } from "../constants";
-
+import {BackHandler} from "react-native";
 const BackgroundColor = "#559EDF";
 export default function MainHeader({ navigation, isMain, title }) {
   if (isMain) {
@@ -11,6 +11,7 @@ export default function MainHeader({ navigation, isMain, title }) {
           backgroundColor: BackgroundColor,
         }}
         centerComponent={{ text: title, style: { color: "#fff" } }}
+        
       />
 
     );
@@ -20,18 +21,24 @@ export default function MainHeader({ navigation, isMain, title }) {
         containerStyle={{
           backgroundColor: BackgroundColor,
           borderBottomWidth: 0,
+          shadowOffset:{  width: 10,  height: 10,  },
+shadowColor: 'black',
+shadowOpacity: 1.0,
         }}
         leftComponent={
           <Icon
-            name="keyboard-arrow-left"
+            name="menu"
             color="#fff"
             size={40}
             onPress={() => {
-              navigation.goBack();
+              console.log(navigation);
+              // navigation.goBack();
             }}
           />
         }
-        centerComponent={{ text: title, style: { color: "#fff" } }}
+        centerComponent={{ text: title, style: { color: "#fff",shadowOffset:{  width: 10,  height: 10,  },
+        shadowColor: 'black',
+        shadowOpacity: 1.0, } }}
       />
     );
   }
