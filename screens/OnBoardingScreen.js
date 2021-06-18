@@ -8,10 +8,8 @@ import {
   StyleSheet,
 } from "react-native";
 
-
 import Onboarding from "react-native-onboarding-swiper";
 // import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
-
 
 const Dots = ({ selected }) => {
   let backgroundColor;
@@ -57,23 +55,24 @@ const OnBoardingScreen = ({ navigation }) => {
           backgroundColor: "#fff",
           image: (
             <Image
-              style={{ width: 300, height: 250 }}
+              style={{ width: 300, height: 250, bottom: 20 }}
               source={require("../assets/Logo.png")}
             />
           ),
-          title: "Tunisicone 1",
-          subtitle: "Welcome to Tunisia",
+          title: "Tunisicone ",
+          subtitle: "Language",
         },
         {
           backgroundColor: "#fff",
           image: (
             <Image
               style={{ width: 300, height: 250 }}
-              source={require("../assets/Aziz.png")}
+              source={require("../assets/Logo.png")}
             />
           ),
-          title: "This is Aziz ",
-          subtitle: "He developped this app",
+          title: "Tunisicone ",
+          subtitle:
+            "The original free online travel guide for Tunisia based on cultural identity.  \n Takes you to places filled with treasures. \n Go fair, go for real, enjoy your trip and support the local communities.",
         },
         {
           backgroundColor: "#fff",
@@ -83,8 +82,8 @@ const OnBoardingScreen = ({ navigation }) => {
               source={require("../assets/Waref.jpg")}
             />
           ),
-          title: "And this is Waref ",
-          subtitle: "Wallah I helped",
+          title: "Thanks to",
+          subtitle: " \\o/ ",
         },
       ]}
     />

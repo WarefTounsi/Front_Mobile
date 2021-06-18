@@ -19,14 +19,14 @@ import { IconButton, Colors } from "react-native-paper";
 import { Icon } from "react-native-elements";
 import ProgressBar from "react-native-progress/Bar";
 import MainHeader from "./MainHeader";
-import Categories from "./Categories"
-import { AsyncStorage } from 'react-native';
+import Categories from "./Categories";
+import { AsyncStorage } from "react-native";
 
 import Config from "react-native-config";
 
 // import { BackgroundColor } from "../constants";
 const BackgroundColor = "#559EDF";
-const value =  AsyncStorage.getItem('language');
+const value = AsyncStorage.getItem("language");
 
 import { API_URL } from "../env";
 
@@ -45,9 +45,9 @@ export default function LocationDetail({ navigation, route }) {
   const { pokemon = {} } = route.params;
   const { location = {} } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
- async function retrieveData()  {
+  async function retrieveData() {
     try {
-      const value = await AsyncStorage.getItem('language');
+      const value = await AsyncStorage.getItem("language");
       if (value !== null) {
         // We have data!!
         console.log(value);
@@ -55,7 +55,7 @@ export default function LocationDetail({ navigation, route }) {
     } catch (error) {
       // Error retrieving data
     }
-  };
+  }
   function getPictures() {
     fetch(API_URL + "locations/" + location.id + "/media", {
       method: "GET",
@@ -157,7 +157,6 @@ export default function LocationDetail({ navigation, route }) {
     // console.log(value);
     retrieveData();
     getPictures();
-    
 
     // https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
     return () => {
@@ -254,14 +253,14 @@ export default function LocationDetail({ navigation, route }) {
             />
           </View>
           <View>
-          <FlatList
-            data={media}
-            // style={{ flex: 1 }}
-            renderItem={renderPictures}
-            numColumns={3}
-          />
-          <Categories item="3" location={location}></Categories>
-          {/* </View> */}
+            <FlatList
+              data={media}
+              // style={{ flex: 1 }}
+              renderItem={renderPictures}
+              numColumns={3}
+            />
+            <Categories item="3" location={location}></Categories>
+            {/* </View> */}
           </View>
         </View>
       </ScrollView>
