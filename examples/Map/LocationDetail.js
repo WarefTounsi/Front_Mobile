@@ -16,48 +16,35 @@ import {
 import ImageViewer from "react-native-image-zoom-viewer";
 
 import { IconButton, Colors } from "react-native-paper";
-import { Icon, Avatar, ListItem } from "react-native-elements";
+import { Icon } from "react-native-elements";
 import ProgressBar from "react-native-progress/Bar";
-import MainHeader from "./MainHeader";
-import { AsyncStorage } from "react-native";
+import MainHeader from "./components/MainHeader";
 
 import Config from "react-native-config";
 
 // import { BackgroundColor } from "../constants";
 const BackgroundColor = "#559EDF";
-const value = AsyncStorage.getItem("language");
 
-import { API_URL } from "../env";
+import { API_URL } from "../../env";
+import { AsyncStorage } from "react-native";
+const value = AsyncStorage.getItem("language");
 
 export default function LocationDetail({ navigation, route }) {
   const [staProgress, setStaProgress] = useState(0);
   const [atkProgress, setAtkProgress] = useState(0);
   const [defProgress, setDefProgress] = useState(0);
-  const [state, setState] = useState("intro");
-
   const [cpProgress, setCpProgress] = useState(0);
   const [media, setMedia] = useState([]);
-  const [themes, setThemes] = useState([]);
-  const [stations, setStations] = useState([]);
 
   const maxSTA = 400;
   const maxATK = 400;
   const maxDEF = 400;
   const maxCP = 4000;
 
+  const { pokemon = {} } = route.params;
   const { location = {} } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
-  async function retrieveData() {
-    try {
-      const value = await AsyncStorage.getItem("language");
-      if (value !== null) {
-        // We have data!!
-        console.log(value);
-      }
-    } catch (error) {
-      // Error retrieving data
-    }
-  }
+
   function getPictures() {
     fetch(API_URL + "locations/" + location.id + "/media", {
       method: "GET",
@@ -80,61 +67,29 @@ export default function LocationDetail({ navigation, route }) {
     console.log(item);
     setModalVisible(true);
   }
-
-  const renderthemes = ({ item, index }) => {
-    return (
-      <SafeAreaView>
-        <ListItem
-          bottomDivider={true}
-          onPress={() => {
-            console.log("test");
-            //   navigation.navigate("LocationDetail", {
-            //     location: displaylocations[item.id-1]
-            //   });
-          }}
-        >
-          <Avatar
-            source={item.photo ? { uri: item.photo } : null}
-            size="medium"
-          />
-
-          <ListItem.Content>
-            <ListItem.Title>{item.title} </ListItem.Title>
-
-            <ListItem.Subtitle style={styles.listItemSubtitle}>
-              {item.description}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-
-          {/* <View style={{ flexDirection: "row" }}>{PokemonTypeElement}</View> */}
-        </ListItem>
-      </SafeAreaView>
-    );
-  };
-
   const renderPictures = ({ item, index }) => {
     return (
       <SafeAreaView>
-        <TouchableOpacity onPress={() => showSlider(index)}>
-          <Image
-            style={{ width: 100, height: 100, margin: 5 }}
-            source={{ uri: item.url }}
-          />
-          <Modal
-            visible={modalVisible}
-            transparent={true}
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <ImageViewer imageUrls={media} index={index} />
-          </Modal>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity onPress={() => showSlider(index)}>
+            <Image
+              style={{ width: 100, height: 100, margin: 5 }}
+              source={{ uri: item.url }}
+            />
+            <Modal
+              visible={modalVisible}
+              transparent={true}
+              onRequestClose={() => setModalVisible(false)}
+            >
+              <ImageViewer imageUrls={media} index={index} />
+            </Modal>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   };
   function fetchData(item) {
     try {
-      setState(item);
-
       if (item == "themes") {
         fetch(API_URL + "locations/" + location.id + "/themes", {
           method: "GET",
@@ -152,7 +107,7 @@ export default function LocationDetail({ navigation, route }) {
               console.log("teeeest");
               theme["url"] = theme["photo"];
             }
-            setThemes(data);
+            setMedia(data);
             // console.log(response)
           })
           .catch((err) => {
@@ -186,16 +141,17 @@ export default function LocationDetail({ navigation, route }) {
   }
 
   useEffect(() => {
-    // console.log( AsyncStorage.getItem('language'))
-    // console.log("vaeza");
-    // console.log(value);
-    retrieveData();
     getPictures();
-    const timeOut = setTimeout(() => {}, 800);
+    const timeOut = setTimeout(() => {
+      setStaProgress(+pokemon.sta / maxSTA);
+      setAtkProgress(+pokemon.atk / maxATK);
+      setDefProgress(+pokemon.def / maxDEF);
+      setCpProgress(+pokemon.cp / maxCP);
+    }, 800);
 
     // https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
     return () => {
-      // clearTimeout(timeOut);
+      clearTimeout(timeOut);
     };
   }, []);
 
@@ -272,48 +228,27 @@ export default function LocationDetail({ navigation, route }) {
               onPress={() => fetchData("intro")}
               title="Intro"
               color={BackgroundColor}
-              // onPress={() => setState("intro")}
               accessibilityLabel="Learn more about this purple button"
             />
             <Button
               onPress={() => fetchData("themes")}
               title="Themes"
               color={BackgroundColor}
-              // onPress={() => setState("themes")}
               accessibilityLabel="Learn more about this purple button"
             />
             <Button
               onPress={() => fetchData("stations")}
               title="Stations"
               color={BackgroundColor}
-              // onPress={() => setState("stations")}
               accessibilityLabel="Learn more about this purple button"
             />
           </View>
-          {(() => {
-            if (state == "intro") {
-              return (
-                <FlatList
-                  data={media}
-                  style={{ flex: 1 }}
-                  renderItem={renderPictures}
-                  // numColumns={3}
-                />
-              );
-            } else if (state == "themes") {
-              return (
-                <FlatList
-                  data={themes}
-                  style={{ flex: 1 }}
-                  renderItem={renderthemes}
-                  // keyExtractor={(item) => item.id}
-                />
-              );
-            } else if (state == "stations") {
-              return <Text> test </Text>;
-            }
-          })()}
-
+          <FlatList
+            data={media}
+            style={{ flex: 1 }}
+            renderItem={renderPictures}
+            numColumns={3}
+          />
           {/* </View> */}
         </View>
       </ScrollView>
@@ -367,6 +302,11 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginTop: 15,
     marginBottom: 35,
+  },
+  pokemonType: {
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   item: {},
   // media: {

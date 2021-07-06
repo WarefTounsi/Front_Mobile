@@ -80,6 +80,7 @@ const OnBoardingScreen = ({ navigation }) => {
             <Image
               style={{ width: 300, height: 250 }}
               source={require("../assets/Waref.jpg")}
+              onPress={() => console.log("process")}
             />
           ),
           title: "Thanks to",
